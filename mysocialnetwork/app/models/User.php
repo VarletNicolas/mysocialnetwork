@@ -80,6 +80,16 @@
       return $sq;
     }
 
+    // Get User By ID
+    public function getEmailById($id){
+      $this->db->query("SELECT email FROM users WHERE id = :id");
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+      $row = $row->email;
+      return $row;
+    }
+
     // Verify 
     public function validate($email, $secretanswer){
       $this->db->query("SELECT secretanswer FROM users WHERE email = :email");

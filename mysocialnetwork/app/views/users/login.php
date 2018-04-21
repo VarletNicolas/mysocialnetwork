@@ -26,7 +26,7 @@
           <br>
           <div class="form-group">
             <div class="form-check">
-              <center><label class="form-check-label"> <input class="form-check-input" type="checkbox" name="save" id="save" value="save" <?php if(isset($_COOKIE["user_email"])) { ?> checked <?php } ?>>Se souvenir de moi</label></center>
+              <center><label class="form-check-label"> <input class="form-check-input" type="checkbox" name="save" id="save" value="<?php echo $data['save']; ?>" <?php if(isset($_COOKIE["user_email"])) { ?> checked <?php } ?>>Se souvenir de moi</label></center>
             </div>
           </div>
         </form>

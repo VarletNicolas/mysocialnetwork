@@ -14,7 +14,10 @@
         </li>
         <?php if(isset($_SESSION['user_id'])) : ?>
 		    <li class="nav-item">
-          <a class="nav-link" href="<?php echo URLROOT; ?>/pages/test">Test</a>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" name ="search" placeholder="Recherche" aria-label="Search">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Rechercher</button>
+          </form>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="<?php echo URLROOT; ?>/profiles">Profile</a>
@@ -24,7 +27,7 @@
       <ul class="navbar-nav ml-auto">
       <?php if(isset($_SESSION['user_id'])) : ?>
         <li class="nav-item">
-          <a class="nav-link" href="<?php echo URLROOT; ?>/users/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Deconnexion</a>
+          <a class="nav-link" href="<?php echo URLROOT; ?>/users/logout"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Deconnexion</a>
         </li>
       <?php else : ?>
         <li class="nav-item">
