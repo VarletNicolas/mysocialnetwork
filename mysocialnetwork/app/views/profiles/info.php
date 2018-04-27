@@ -2,6 +2,7 @@
 <?php foreach($data['profile'] as $arrdataprofile) : ?>
   <?php foreach($arrdataprofile as $key => $value) : ?>
     <?php 
+      if($key == "id"){ $id=$value; }
       if($key == "fname"){ $fname=$value; }
       if($key == "lname"){ $lname=$value; }  
       if($key == "gender"){ $gender=$value; } 
@@ -30,6 +31,7 @@
   <?php if($key1 == "img_blob"){ $img_blobbg = $val1; } ?>
   <?php endforeach; ?>
 <?php endforeach; ?>
+<?php $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";  $idu2 = current(array_reverse(explode('/', $url))); // http://geoffray.be/blog/php/only-variables-should-be-passed-by-reference ?>
 
 
 
@@ -91,7 +93,22 @@
             <?php  echo '<img src="data:image/png;base64,'.base64_encode($img_blobbg).'" width="851" height="315" class="product-holder">'; ?>
             <?php  echo '<img src="data:image/png;base64,'.base64_encode($img_blobprofile).'" width="168" height="168" class="sur-1" style="border:4px solid white">'; ?>
             <a class="btn btn-primary pull-right sur-2" href="<?php echo URLROOT; ?>/profiles/info"><i class="fas fa-edit" aria-hidden="true"></i> Modifier le profile</a>
-            <a class="btn btn-primary pull-right sur-3" href="<?php echo URLROOT; ?>/users/addfriend"><i class="fa fa-user-plus" aria-hidden="true"></i> Ajouter</a>
+            <?php if($_SESSION['user_id'] != $id) : ?>
+                <?php if($data['friend'] === false ) : ?>
+                <? else: ?>
+                    <form class="pull-right" action="<?php echo URLROOT; ?>/friendships/addFR/<?php echo $idu2; ?>" method="post">
+                        <button class="btn btn-primary pull-right sur-3" type="submit"><i class="fa fa-user-plus" aria-hidden="true"></i> Ajouter</button>
+                    </form>
+                <?php endif;?>
+            <?php endif;?>
+            <?php if($_SESSION['user_id'] != $id) : ?>
+                <?php if($data['friend'] === true ) : ?>
+                <? else: ?>
+                    <form class="pull-right" action="<?php echo URLROOT; ?>/friendships/rmFR/<?php echo $idu2; ?>" method="post">
+                        <button class="btn btn-primary pull-right sur-3" type="submit"><i class="fas fa-user-times"></i> Supprimer</button>
+                    </form>
+                <?php endif;?>
+            <?php endif;?>
             <p class="sur-4"><?php echo $lname.' '.$fname; ?></p>
             <nav class="navbar navbar-light nav-item1 justify-content-center contentarea">
                 <ul class="nav" >
@@ -103,9 +120,6 @@
                     </li>
                     <li class="nav-item2">
                         <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/friend">Amis</a>
-                    </li>
-                    <li class="nav-item2">
-                        <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/gallery">Photos</a>
                     </li>
                 </ul>
             </nav>
@@ -161,6 +175,7 @@
                                     <p><i class="fas fa-mobile-alt"></i> <?php echo ' '.$phonenb; ?></p>
                                     <p><i class="fas fa-birthday-cake"></i> <?php echo ' '.$birthday; ?></p>
                                 </div>
+                                <?php if($_SESSION['user_id'] == $id) : ?>
                                 <form action="<?php echo URLROOT; ?>/profiles/info" method="post">
                                     <div class="form-group">
                                         <div class="form-row">
@@ -271,18 +286,21 @@
                                         </div>
                                     </div>
                                 </form>
+                                <?php endif;?>
                             </div>
                         </div>
                     </div>
                     <div class="card-body collapse" id="img">
                         <div class="row">
                             <div class="col-lg-6 mx-auto">
+                            <?php if($_SESSION['user_id'] == $id) : ?>
                                 <form method="get" action="<?php echo URLROOT; ?>/profiles/addpimg">
                                     <button type="submit">Ajouter une image de profile</button>
                                 </form>
                                 <form method="get" action="<?php echo URLROOT; ?>/profiles/addbgimg">
                                     <button type="submit">Ajouter une image de fond</button>
                                 </form>
+                            <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -293,6 +311,7 @@
                                     <p><i class="far fa-heart"></i> <?php echo ' '.$relationship; ?></p>
                                 </div>
                                 <div class="col">
+                                    <?php if($_SESSION['user_id'] == $id) : ?>
                                     <form action="<?php echo URLROOT; ?>/profiles/info" method="post">
                                         <div class="form-group">
                                             <label>Situation personnel:<sup>*</sup></label>
@@ -305,6 +324,7 @@
                                             </div>
                                         </div>
                                     </form>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -317,6 +337,7 @@
                                     <p><i class="fas fa-briefcase"></i> <?php echo ' '.$work; ?></p>
                                 </div>
                                 <div class="col">
+                                    <?php if($_SESSION['user_id'] == $id) : ?>
                                     <form action="<?php echo URLROOT; ?>/profiles/info" method="post">
                                         <div class="form-group">
                                             <label>Lieu d'etude:<sup>*</sup></label>
@@ -329,8 +350,10 @@
                                             </div>
                                         </div>
                                     </form>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col">
+                                <?php if($_SESSION['user_id'] == $id) : ?>
                                     <form action="<?php echo URLROOT; ?>/profiles/info" method="post">
                                         <div class="form-group">
                                             <label>Lieu de travail:<sup>*</sup></label>
@@ -343,6 +366,7 @@
                                             </div>
                                         </div>
                                     </form>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

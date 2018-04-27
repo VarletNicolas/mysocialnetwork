@@ -93,20 +93,9 @@
     <?php  echo '<img src="data:image/png;base64,'.base64_encode($img_blobprofile).'" width="168" height="168" class="sur-1" style="border:4px solid white">'; ?>
     <a class="btn btn-primary pull-right sur-2" href="<?php echo URLROOT; ?>/profiles/info"><i class="fas fa-edit" aria-hidden="true"></i> Modifier le profile</a>
     <?php if($_SESSION['user_id'] != $id) : ?>
-      <?php if($data['friend'] === false ) : ?>
-      <? else: ?>
-        <form class="pull-right" action="<?php echo URLROOT; ?>/friendships/addFR/<?php echo $idu2; ?>" method="post">
-          <button class="btn btn-primary pull-right sur-3" type="submit"><i class="fa fa-user-plus" aria-hidden="true"></i> Ajouter</button>
-        </form>
-      <?php endif;?>
-    <?php endif;?>
-    <?php if($_SESSION['user_id'] != $id) : ?>
-      <?php if($data['friend'] === true ) : ?>
-      <? else: ?>
-        <form class="pull-right" action="<?php echo URLROOT; ?>/friendships/rmFR/<?php echo $idu2; ?>" method="post">
-          <button class="btn btn-primary pull-right sur-3" type="submit"><i class="fas fa-user-times"></i> Supprimer</button>
-        </form>
-      <?php endif;?>
+      <form class="pull-right" action="<?php echo URLROOT; ?>/friendships/addFR/<?php echo $idu2; ?>" method="post">
+        <button class="btn btn-primary pull-right sur-3" type="submit"><i class="fa fa-user-plus" aria-hidden="true"></i> Ajouter</button>
+      </form>
     <?php endif;?>
     
     
@@ -142,36 +131,10 @@
         <div class="card" style="width: 34.5rem; border-color: silver;">
           <ul class="nav justify-content-center">
             <li class="nav-item">
-              <a class="nav-link active" href="<?php echo URLROOT; ?>/profiles">Voir vos postes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="<?php echo URLROOT; ?>/profiles/addpost">Ajouter un poste</a>
+              <a class="nav-link active" href="<?php echo URLROOT; ?>/profiles/ListeAmis">Liste vos Amis</a>
             </li>
           </ul>
-          <div class="container">
-            <?php foreach($data['postuser'] as $postuser) : ?>
-            
-              <div class="nav">
-                <?php if($postuser->user_id == $_SESSION['user_id']) : ?>
-                  <a class="btn btn-dark mb-3 nav-item" href="<?php echo URLROOT; ?>/posts/edit/<?php echo $postuser->id; ?>">Editer</a>
-                  <form class="pull-right" action="<?php echo URLROOT; ?>/posts/delete/<?php echo $postuser->id; ?>" method="post">
-                    <input type="submit" class="btn btn-danger mb-3 nav-item" value="Supprimer">
-                  </form>
-                <?php endif; ?>
-              </div>
-              <br>
-              <h1><?php echo $postuser->title; //var_dump($data); ?></h1>
-              <div class="bg-secondary text-white p-2 mb-3">
-                Ecrit par <?php echo $data['profile'][0]->fname; ?> <?php echo $data['profile'][0]->lname; ?> sur <?php echo $postuser->created_at; ?>
-                <a class="btn btn-primary pull-right" href="<?php echo URLROOT; ?>/posts/addlike/<?php echo $postuser->id; ?>"><i class="far fa-thumbs-up" aria-hidden="true"></i></a>
-              </div>
-              <?php if(!empty($postuser->img_p_blob)) : ?>
-                <p class="card-text"><?php  echo '<img src="data:image/png;base64,'.base64_encode($postuser->img_p_blob).'">'; ?></p>
-              <?php endif;?>
-              <p><?php echo $postuser->body; ?></p></br>
-
-            <?php endforeach; ?>
-          </div>
+          
         </div>
       </div>
     </div>

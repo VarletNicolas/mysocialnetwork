@@ -31,6 +31,7 @@
   <?php if($key1 == "img_blob"){ $img_blobbg = $val1; } ?>
   <?php endforeach; ?>
 <?php endforeach; ?>
+<?php $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";  $idu2 = current(array_reverse(explode('/', $url))); // http://geoffray.be/blog/php/only-variables-should-be-passed-by-reference ?>
 
 
 
@@ -91,7 +92,9 @@
     <?php  echo '<img src="data:image/png;base64,'.base64_encode($img_blobbg).'" width="851" height="315" class="product-holder">'; ?>
     <?php  echo '<img src="data:image/png;base64,'.base64_encode($img_blobprofile).'" width="168" height="168" class="sur-1" style="border:4px solid white">'; ?>
     <a class="btn btn-primary pull-right sur-2" href="<?php echo URLROOT; ?>/profiles/info"><i class="fas fa-edit" aria-hidden="true"></i> Modifier le profile</a>
-    <a class="btn btn-primary pull-right sur-3" href="<?php echo URLROOT; ?>/users/addfriend"><i class="fa fa-user-plus" aria-hidden="true"></i> Ajouter</a>
+    <form class="pull-right" action="<?php echo URLROOT; ?>/friendships/addFR/<?php echo $idu2; ?>" method="post">
+      <button class="btn btn-primary pull-right sur-3" type="submit"><i class="fa fa-user-plus" aria-hidden="true"></i> Ajouter</button>
+    </form>
     <p class="sur-4"><?php echo $lname.' '.$fname?></p>
     <nav class="navbar navbar-light nav-item1 justify-content-center contentarea">
       <ul class="nav" >
@@ -103,9 +106,6 @@
         </li>
         <li class="nav-item2">
           <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/friend">Amis</a>
-        </li>
-        <li class="nav-item2">
-          <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/gallery">Photos</a>
         </li>
       </ul>
     </nav>

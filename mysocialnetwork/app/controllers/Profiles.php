@@ -9,6 +9,7 @@
 			$this->userModel = $this->model('User');
 			$this->imageModel = $this->model('Image');
 			$this->postModel = $this->model('Post');
+			$this->friendshipModel = $this->model('Friendship');
 		}
 		// load profile of current user
 		public function index(){
@@ -27,6 +28,10 @@
 			}
 			
 			$postuser = $this->postModel->getPostsUser($_SESSION['user_id']);
+			foreach($profile as $key => $value) {
+				if($key == "id"){ $id=$value; }
+			}
+			$isfriend = $this->friendshipModel->IsFriends($_SESSION['user_id'], $profile[0]->id);
 
 			if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				// Sanitize POST
@@ -36,6 +41,7 @@
 					case "Publier avec image":
 						$data = [
 							'postuser' => $postuser,
+							'friend' => $isfriend,
 							'profile' => $profile,
 							'imageProfile' => $images,
 							'imageBackground' => $imagesbg,	
@@ -100,6 +106,7 @@
 					case "Publier sans image":
 						$data = [
 							'postuser' => $postuser,
+							'friend' => $isfriend,
 							'title' => trim($_POST['title']),
 							'body' => trim($_POST['body']),
 							'user_id' => $_SESSION['user_id'],
@@ -148,6 +155,7 @@
 				// Init data
 				$data = [
 					'postuser' => $postuser,
+					'friend' => $isfriend,
 					'profile' => $profile,
 					'imageProfile' => $images,
 					'imageBackground' => $imagesbg,	
@@ -189,6 +197,11 @@
 			
 			$postuser = $this->postModel->getPostsUser($id);
 
+			foreach($profile as $key => $value) {
+				if($key == "id"){ $id=$value; }
+			}
+			$isfriend = $this->friendshipModel->IsFriends($_SESSION['user_id'], $profile[0]->id);
+
 			if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				// Sanitize POST
 				$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -197,6 +210,7 @@
 					case "Publier avec image":
 						$data = [
 							'postuser' => $postuser,
+							'friend' => $isfriend,
 							'profile' => $profile,
 							'imageProfile' => $images,
 							'imageBackground' => $imagesbg,	
@@ -261,6 +275,7 @@
 					case "Publier sans image":
 						$data = [
 							'postuser' => $postuser,
+							'friend' => $isfriend,
 							'title' => trim($_POST['title']),
 							'body' => trim($_POST['body']),
 							'user_id' => $id,
@@ -309,6 +324,7 @@
 				// Init data
 				$data = [
 					'postuser' => $postuser,
+					'friend' => $isfriend,
 					'profile' => $profile,
 					'imageProfile' => $images,
 					'imageBackground' => $imagesbg,	
@@ -802,6 +818,480 @@
 			}
 		}
 
+		public function i($id){
+			$profile = $this->profileModel->getProfile($id);
+			$defaultemail = $this->userModel->getEmailById($id);
+
+			if($this->imageModel->havePImage($id)){
+				$images = $this->imageModel->getProfileimg($id);
+			} else {
+				$images = $this->imageModel->getDefaultProfileimg();
+			}
+			if($this->imageModel->haveBGImage($id)){
+				$imagesbg = $this->imageModel->getBackgroundimg($id);
+			} else {
+				$imagesbg = $this->imageModel->getDefaultBackgroundimg();
+			}
+			$isfriend = $this->friendshipModel->IsFriends($_SESSION['user_id'], $profile[0]->id);
+			// Check if POST
+			if($_SERVER['REQUEST_METHOD'] == 'POST'){
+				switch($_POST['submit']) {
+					case "Changer les informations": 
+						// Sanitize POST
+						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+						// trim() Strip whitespace (or other characters) from the beginning and end of a string
+						// gender default = "homme" 
+						$data = [
+							'profile' => $profile,
+							'friend' => $isfriend,
+							'imageProfile' => $images,
+							'imageBackground' => $imagesbg,
+							'defaultemail' => $defaultemail,
+							'fname' => trim($_POST['fname']),
+							'lname' => trim($_POST['lname']),
+							'email' => trim($_POST['email']),
+							'password' => trim($_POST['password']),
+							'confirm_password' => trim($_POST['confirm_password']),
+							'secretquestion' => $_POST['secretquestion'],
+							'secretanswer' => trim($_POST['secretanswer']),
+							'confirm_secretanswer' => trim($_POST['confirm_secretanswer']),
+							'birthdate' => trim($_POST['birthdate']),
+							'tel' => $_POST['tel'],
+							'city' => trim($_POST['city']),
+							'state' => trim($_POST['state']),
+							'country' => trim($_POST['country']),
+							'zipcode' => $_POST['zipcode'],
+							'intro' => trim($_POST['intro']),
+							'website' => trim($_POST['website']),
+							'intro_err' => '',
+							'website_err' => '',
+							'zipcode_err' => '',
+							'country_err' => '',
+							'state_err' => '',
+							'city_err' => '',
+							'tel_err' => '',
+							'fname_err' => '',
+							'lname_err' => '',
+							'email_err' => '',
+							'password_err' => '',
+							'confirm_password_err' => '',
+							'secretquestion_err' => '',
+							'secretanswer_err' => '',
+							'confirm_secretanswer_err' => '',
+							'birthdate_err' => '',
+							'sameE' => '',
+							'relationship' => '',
+							'relationship_err' => '',
+							'work' => '',
+							'work_err' => '',
+							'school' =>  '',
+							'school_err' => ''
+						];
+
+						// Validate city
+						if(empty($data['city'])){
+							$data['city_err'] = 'Le champ Ville ne peut pas etre vide.';
+						}
+
+						// Validate state
+						if(empty($data['state'])){
+							$data['state_err'] = 'Le champ Region ne peut pas etre vide.';
+						}
+
+						// Validate city
+						if(empty($data['country'])){
+							$data['country_err'] = 'Le champ Pays ne peut pas etre vide.';
+						}
+
+						// Validate city
+						if(empty($data['zipcode'])){
+							$data['zipcode_err'] = 'Le champ Code Postale ne peut pas etre vide.';
+						} elseif(strlen($data['zipcode']) < 4){
+							$data['zipcode_err'] = 'Le Code Postale doit contenir plus de 4 carracteres.';
+						}
+				
+						// Validate email
+						if(empty($data['email'])){
+							$data['email_err'] = 'Veiller entre votre email';
+							// Validate name
+							if(empty($data['fname'])){
+								$data['fname_err'] = 'Veiller entre votre prenom';
+							}
+							if(empty($data['lname'])){
+								$data['lname_err'] = 'Veiller entre votre nom';
+							}
+						} else{
+							// Check Email
+							if($data['email'] == $data['defaultemail']){
+								$data['sameE'] = 'ok';
+							} else {
+								if(($this->userModel->findUserByEmail($data['email'])) && (empty($data['sameE']))){
+									$data['email_err'] = 'Email deja prise.';
+								}
+							}       					
+							if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
+							$data['email_err'] = 'Format de l\'email non valide';
+							}
+						}
+				
+						// Validate password
+						if(empty($data['password'])){
+							$data['password_err'] = 'Veiller entre votre mot de passe.';     
+						} elseif(strlen($data['password']) < 6){
+							$data['password_err'] = 'Le mot de passe doit contenir plus de 6 carracteres.';
+						}
+				
+						// Validate confirm password
+						if(empty($data['confirm_password'])){
+							$data['confirm_password_err'] = 'Veiller confirmer le mot de passe.';     
+						} else {
+							if($data['password'] != $data['confirm_password']){
+								$data['confirm_password_err'] = 'Les mots de passe ne corresponde pas.';
+							}
+						}
+				
+						// Validate secret question
+						if(empty($data['secretquestion'])){
+							$data['secretquestion_err'] = 'La question secrete ne peut pas etre vide.';
+						}
+				
+						// Validate secretanswer
+						if(empty($data['secretanswer'])){
+							$data['secretanswer_err'] = 'La reponse secrete ne peut pas etre vide.';
+						} elseif(strlen($data['secretanswer']) < 6){
+							$data['secretanswer_err'] = 'La reponse secrete doit contenir plus de 6 carracteres.';
+						}
+				
+						// Validate confirm password
+						if(empty($data['confirm_secretanswer'])){
+							$data['confirm_secretanswer_err'] = 'Veiller confirmer la reponse secrete.';     
+						} else {
+							if($data['secretanswer'] != $data['confirm_secretanswer']){
+								$data['confirm_secretanswer_err'] = 'Les reponses ne corresponde pas.';
+							}
+						}
+						
+						// Validate birthdate
+						if(empty($data['birthdate'])){
+							$data['birthdate_err'] = 'Veiller entre votre mot de passe.';     
+						} elseif(strlen($data['birthdate']) < 10){
+							$data['birthdate_err'] = 'La date n\'est pas complete.';
+						}
+
+						// Validate tel
+						if(empty($data['tel'])){
+							$data['tel_err'] = 'Le numero de telephone ne peut pas etre vide.';
+						} elseif(strlen($data['tel']) < 6){
+							$data['tel_err'] = 'Le numero de telephone doit contenir 10 numeros: 06.xx.xx.xx.xx ou 07.xx.xx.xx.xx';
+						}
+				
+						// Make sure errors are empty
+						if(empty($data['website_err']) && empty($data['intro_err']) && empty($data['tel_err']) && empty($data['zipcode_err']) && empty($data['country_err']) && empty($data['state_err']) && empty($data['city_err']) && empty($data['birthdate_err']) && empty($data['confirm_secretanswer_err']) && empty($data['secretquestion_err']) && empty($data['secretanswer_err']) && empty($data['fname_err']) && empty($data['lname_err']) && empty($data['email_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])){
+							// SUCCESS - Proceed to insert
+				
+							// Hash Password
+							$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+							$data['secretanswer'] = password_hash($data['secretanswer'], PASSWORD_DEFAULT);
+				
+							//Execute
+							if($this->profileModel->changeinfo($data)){
+								// Redirect to login
+								flash('change_info', 'Vos informations ont ete mise a jour.');
+								redirect('profiles/index');
+							} else {
+								die('Erreur sur le changement d\'informations');
+							}
+							
+						} else {
+							// Load View
+							$this->view('profiles/info', $data);
+						}
+					break;
+					case "Changer":
+						// Sanitize POST
+						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+						// trim() Strip whitespace (or other characters) from the beginning and end of a string
+						// gender default = "homme" 
+						$data = [
+							'profile' => $profile,
+							'friend' => $isfriend,
+							'imageProfile' => $images,
+							'imageBackground' => $imagesbg,
+							'defaultemail' => $defaultemail,
+							'fname' => '',
+							'lname' => '',
+							'email' => '',
+							'password' => '',
+							'confirm_password' => '',
+							'secretquestion' => '',
+							'secretanswer' => '',
+							'confirm_secretanswer' => '',
+							'birthdate' => '',
+							'tel' => '',
+							'city' => '',
+							'state' => '',
+							'country' => '',
+							'zipcode' => '',
+							'intro' => '',
+							'website' => '',
+							'intro_err' => '',
+							'website_err' => '',
+							'zipcode_err' => '',
+							'country_err' => '',
+							'state_err' => '',
+							'city_err' => '',
+							'tel_err' => '',
+							'fname_err' => '',
+							'lname_err' => '',
+							'email_err' => '',
+							'password_err' => '',
+							'confirm_password_err' => '',
+							'secretquestion_err' => '',
+							'secretanswer_err' => '',
+							'confirm_secretanswer_err' => '',
+							'birthdate_err' => '',
+							'sameE' => '',
+							'relationship' => trim($_POST['relationship']),
+							'relationship_err' => '',
+							'work' => '',
+							'work_err' => '',
+							'school' =>  '',
+							'school_err' => ''
+						];
+				
+						// Validate email
+						if(empty($data['relationship'])){
+							$data['relationship_err'] = 'Veiller entre votre status personnel.';
+						} elseif(strlen($data['relationship']) < 6){
+							$data['relationship_err'] = 'Votre status pesonnel doit contenir plus de 6 carracteres.';
+						}
+				
+						// Make sure errors are empty
+						if(empty($data['relationship_err'])){
+							// SUCCESS - Proceed to insert
+				
+							//Execute
+							if($this->profileModel->changeinforelationship($data)){
+								// Redirect to login
+								flash('change_info_relationship', 'Vos informations ont ete mise a jour.');
+								redirect('profiles/index');
+							} else {
+								die('Erreur sur le changement d\'informations');
+							}
+						} else {
+							// Load View
+							$this->view('profiles/info', $data);
+						}
+					break;
+					case "Changer lieu d'etude":
+						// Sanitize POST
+						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+						// trim() Strip whitespace (or other characters) from the beginning and end of a string
+						// gender default = "homme" 
+						$data = [
+							'profile' => $profile,
+							'friend' => $isfriend,
+							'imageProfile' => $images,
+							'imageBackground' => $imagesbg,
+							'defaultemail' => $defaultemail,
+							'fname' => '',
+							'lname' => '',
+							'email' => '',
+							'password' => '',
+							'confirm_password' => '',
+							'secretquestion' => '',
+							'secretanswer' => '',
+							'confirm_secretanswer' => '',
+							'birthdate' => '',
+							'tel' => '',
+							'city' => '',
+							'state' => '',
+							'country' => '',
+							'zipcode' => '',
+							'intro' => '',
+							'website' => '',
+							'intro_err' => '',
+							'website_err' => '',
+							'zipcode_err' => '',
+							'country_err' => '',
+							'state_err' => '',
+							'city_err' => '',
+							'tel_err' => '',
+							'fname_err' => '',
+							'lname_err' => '',
+							'email_err' => '',
+							'password_err' => '',
+							'confirm_password_err' => '',
+							'secretquestion_err' => '',
+							'secretanswer_err' => '',
+							'confirm_secretanswer_err' => '',
+							'birthdate_err' => '',
+							'sameE' => '',
+							'relationship' => '',
+							'relationship_err' => '',
+							'work' =>  '',
+							'work_err' => '',
+							'school' =>  trim($_POST['school']),
+							'school_err' => '',
+						];
+				
+						// Validate email
+						if(empty($data['school'])){
+							$data['school_err'] = 'Veiller entre votre status personnel.';
+						} elseif(strlen($data['school']) < 2){
+							$data['school_err'] = 'Votre etablissement scolaire doit contenir plus de 2 carracteres.';
+						}
+				
+						// Make sure errors are empty
+						if(empty($data['school_err'])){
+							// SUCCESS - Proceed to insert
+				
+							//Execute
+							if($this->profileModel->changeinfoschool($data)){
+								// Redirect to login
+								flash('change_info_school', 'Vos informations ont ete mise a jour.');
+								redirect('profiles/index');
+							} else {
+								die('Erreur sur le changement d\'informations');
+							}
+						} else {
+							// Load View
+							$this->view('profiles/info', $data);
+						}
+					break;
+					case "Changer lieu de travail":
+						// Sanitize POST
+						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+						// trim() Strip whitespace (or other characters) from the beginning and end of a string
+						// gender default = "homme" 
+						$data = [
+							'profile' => $profile,
+							'friend' => $isfriend,
+							'imageProfile' => $images,
+							'imageBackground' => $imagesbg,
+							'defaultemail' => $defaultemail,
+							'fname' => '',
+							'lname' => '',
+							'email' => '',
+							'password' => '',
+							'confirm_password' => '',
+							'secretquestion' => '',
+							'secretanswer' => '',
+							'confirm_secretanswer' => '',
+							'birthdate' => '',
+							'tel' => '',
+							'city' => '',
+							'state' => '',
+							'country' => '',
+							'zipcode' => '',
+							'intro' => '',
+							'website' => '',
+							'intro_err' => '',
+							'website_err' => '',
+							'zipcode_err' => '',
+							'country_err' => '',
+							'state_err' => '',
+							'city_err' => '',
+							'tel_err' => '',
+							'fname_err' => '',
+							'lname_err' => '',
+							'email_err' => '',
+							'password_err' => '',
+							'confirm_password_err' => '',
+							'secretquestion_err' => '',
+							'secretanswer_err' => '',
+							'confirm_secretanswer_err' => '',
+							'birthdate_err' => '',
+							'sameE' => '',
+							'relationship' => '',
+							'relationship_err' => '',
+							'work' => trim($_POST['work']),
+							'work_err' => '',
+							'school' =>  '',
+							'school_err' => ''
+						];
+				
+						// Validate email
+						if(empty($data['work'])){
+							$data['work_err'] = 'Veiller entre votre status personnel.';
+						} elseif(strlen($data['work']) < 2){
+							$data['work_err'] = 'Votre travail doit contenir plus de 2 carracteres.';
+						}
+				
+						// Make sure errors are empty
+						if(empty($data['work_err'])){
+							// SUCCESS - Proceed to insert
+				
+							//Execute
+							if($this->profileModel->changeinfowork($data)){
+								// Redirect to login
+								flash('change_info_work', 'Vos informations ont ete mise a jour.');
+								redirect('profiles/index');
+							} else {
+								die('Erreur sur le changement d\'informations');
+							}
+						} else {
+							// Load View
+							$this->view('profiles/info', $data);
+						}
+					break;
+				}
+			} else {
+				// IF NOT A POST REQUEST
+		
+				// Init data
+				$data = [
+					'profile' => $profile,
+					'friend' => $isfriend,
+					'imageProfile' => $images,
+					'imageBackground' => $imagesbg,
+					'defaultemail' => $defaultemail,
+					'fname' => '',
+					'lname' => '',
+					'email' => '',
+					'password' => '',
+					'confirm_password' => '',
+					'secretquestion' => '',
+					'secretanswer' => '',
+					'confirm_secretanswer' => '',
+					'tel' => '',
+					'city' => '',
+					'state' => '',
+					'country' => '',
+					'zipcode' => '',
+					'intro' => '',
+					'website' => '',
+					'intro_err' => '',
+					'website_err' => '',
+					'zipcode_err' => '',
+					'country_err' => '',
+					'state_err' => '',
+					'city_err' => '',
+					'tel_err' => '',
+					'fname_err' => '',
+					'lname_err' => '',
+					'email_err' => '',
+					'password_err' => '',
+					'confirm_password_err' => '',
+					'secretquestion_err' => '',
+					'secretanswer_err' => '',
+					'confirm_secretanswer_err',
+					'birthdate' => '',
+					'birthdate_err' => '',
+					'sameE' => '',
+					'relationship' => '',
+					'relationship_err' => '',
+					'work' => '',
+					'work_err' => '',
+					'school' =>  '',
+					'school_err' => ''
+				];
+		
+				// Load View
+				$this->view('profiles/info', $data);
+			}
+		}
+
 		public function edit(){
 			$data = [];
 			// Load View
@@ -1104,6 +1594,75 @@
 	
 			$this->view('profiles/addpost', $data);
 			}
+		}
+
+		public function friend(){
+			$profile = $this->profileModel->getProfile($_SESSION['user_id']);
+			
+			if($this->imageModel->havePImage($_SESSION['user_id'])){
+				$images = $this->imageModel->getProfileimg($_SESSION['user_id']);
+			} else {
+				$images = $this->imageModel->getDefaultProfileimg();
+			}
+			if($this->imageModel->haveBGImage($_SESSION['user_id'])){
+				$imagesbg = $this->imageModel->getBackgroundimg($_SESSION['user_id']);
+			} else {
+				$imagesbg = $this->imageModel->getDefaultBackgroundimg();
+			}
+			
+			// IF NOT A POST REQUEST
+
+			// Init data
+			$data = [
+				'profile' => $profile,
+				'imageProfile' => $images,
+				'imageBackground' => $imagesbg
+			];
+
+			// Load View
+			$this->view('profiles/friend', $data);
+		}
+
+		public function ListeAmis(){
+			$profile = $this->profileModel->getProfile($_SESSION['user_id']);
+			
+			if($this->imageModel->havePImage($_SESSION['user_id'])){
+				$images = $this->imageModel->getProfileimg($_SESSION['user_id']);
+			} else {
+				$images = $this->imageModel->getDefaultProfileimg();
+			}
+			if($this->imageModel->haveBGImage($_SESSION['user_id'])){
+				$imagesbg = $this->imageModel->getBackgroundimg($_SESSION['user_id']);
+			} else {
+				$imagesbg = $this->imageModel->getDefaultBackgroundimg();
+			}
+			
+			$fl = $this->friendshipModel->getfriendlist($_SESSION['user_id']);
+			$ap = array();
+			$imagesap = array();
+			foreach($fl as $arr){
+				$Uid1=$arr->id_user1;
+				$Uid2=$arr->id_user2;
+				if($_SESSION['user_id'] === $Uid1){
+					$p = $this->profileModel->getProfile($Uid2);
+					array_push($ap, $p);
+				} elseif($_SESSION['user_id'] === $Uid2){
+					$p = $this->profileModel->getProfile($Uid1);
+					array_push($ap, $p);
+				}
+			}
+			
+			
+			// Init data
+			$data = [
+				'profile' => $profile,
+				'imageProfile' => $images,
+				'imageBackground' => $imagesbg,
+				'tab' => $ap
+			];
+
+			// Load View
+			$this->view('profiles/ListeAmis', $data);
 		}
 	}
 ?>
