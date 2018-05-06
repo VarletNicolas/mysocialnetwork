@@ -1602,7 +1602,7 @@
 			xmlwriter_start_document($xml, '1.0', 'UTF-8');
 			$xml->startDTD('html'); 
 			// for XHTML 1.0 
-			$xml->startDTD('html', '-//W3C//DTD XHTML 1.0 Strict//EN','lienDTD'); // standards compliant 
+			$xml->startDTD('html', '-//W3C//DTD XHTML 1.0 Strict//EN','https://github.com/VarletNicolas/mysocialnetwork/edit/master/mysocialnetwork/app/views/profiles/xml/mysocialnetwork.dtd'); // standards compliant 
 			$xml->endDTD();
 				
 			$i=0;

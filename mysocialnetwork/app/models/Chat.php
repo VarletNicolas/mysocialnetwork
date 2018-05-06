@@ -28,10 +28,10 @@
     }
 		
 		// Get All Messages
-    public function getMessages($id){
-      $this->db->query("SELECT * FROM messages where id_user = :id_user ORDER BY send_at DESC;");
-			$this->db->bind(':id_user', $id);
-			
+    public function getMessages($id1,$id2){
+      $this->db->query("SELECT * FROM messages where id_user = :id_user1 AND id_dest = :id_user2 ORDER BY send_at DESC;");
+			$this->db->bind(':id_user1', $id1);
+			$this->db->bind(':id_user2', $id2);
       $results = $this->db->resultset();
 
       return $results;
