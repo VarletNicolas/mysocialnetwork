@@ -89,6 +89,11 @@
       } else {
         return false;
       }
-		}
+    }
+    
+    public function exportfriendsinfotoxml($data){
+      // function defination to convert array to xml
+      
+    }
   }
 ?>

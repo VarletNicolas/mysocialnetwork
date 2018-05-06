@@ -8,13 +8,35 @@
       $this->postModel = $this->model('Post');
       $this->userModel = $this->model('User');
       $this->imageModel = $this->model('Image');
+      $this->friendshipModel = $this->model('Friendship');
     }
 
     // Load All Posts
     public function index(){
-      $posts = $this->postModel->getPublicPosts();
+      $postsyouonly = $this->postModel->getownPosts($_SESSION['user_id']);
+      $postspublic = $this->postModel->getPublicPosts();
+      $postsprivate = $this->postModel->getPrivatePosts($_SESSION['user_id']);
+
+      $Posts = array_merge($postsyouonly, $postspublic, $postsprivate);
+
+      $getfriends = $this->friendshipModel->getfriendlist($_SESSION['user_id']);
+      $fppost =[]; $friendarray = [];
+      foreach ($getfriends as $f) {
+        if(($f->id_user1 == $_SESSION['user_id']) && (!in_array($f->id_user2, $friendarray))){
+          $tmp = $this->postModel->getPrivatePosts($f->id_user2);
+          $fppost = array_merge($fppost, $tmp);
+          array_push($friendarray, $f->id_user2);
+        } elseif(($f->id_user2 == $_SESSION['user_id']) && (!in_array($f->id_user1, $friendarray))){
+          $tmp = $this->postModel->getPrivatePosts($f->id_user1);
+          $fppost = array_merge($fppost, $tmp);
+          array_push($friendarray, $f->id_user1);
+        }
+      }
+      $Posts = array_merge($Posts, $fppost);
+      
       $data = [
-        'posts' => $posts
+        'getfriends' => $getfriends,
+        'posts' => $Posts
       ];
       
       $this->view('posts/index', $data);

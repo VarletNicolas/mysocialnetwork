@@ -6,22 +6,42 @@
       $this->db = new Database; 
     }
 
+    // Get All Own Posts (YouOnly)
+    public function getownPosts($id){
+      $this->db->query("SELECT *, posts.id as postId, users.id as userId FROM posts INNER JOIN users ON posts.user_id = users.id WHERE visibility = 'YouOnly' AND user_id = :id ORDER BY posts.created_at DESC;");
+      $this->db->bind(':id', $id);
+      $results = $this->db->resultset();
+
+      return $results;
+    }
+
     // Get All Public Posts
     public function getPublicPosts(){
-      $this->db->query("SELECT *, 
-                        posts.id as postId, 
-                        users.id as userId
-                        FROM posts 
-                        INNER JOIN users 
-                        ON posts.user_id = users.id
-                        WHERE visibility = 'Public'
-                        ORDER BY posts.created_at DESC;");
+      $this->db->query("SELECT *, posts.id as postId, users.id as userId FROM posts INNER JOIN users ON posts.user_id = users.id WHERE visibility = 'Public' ORDER BY posts.created_at DESC;");
 
       $results = $this->db->resultset();
 
       return $results;
     }
 
+    // Get All Private Posts
+    public function getPrivatePosts($id){
+      $this->db->query("SELECT *, posts.id as postId, users.id as userId FROM posts INNER JOIN users ON posts.user_id = users.id WHERE visibility = 'Private' AND user_id = :id ORDER BY posts.created_at DESC;");
+      $this->db->bind(':id', $id);
+      $results = $this->db->resultset();
+
+      return $results;
+    }
+/*
+    // Get All friend Posts
+    public function getFriendPost($id){
+      $this->db->query("SELECT *, posts.id as postId, users.id as userId FROM posts INNER JOIN users ON posts.user_id = users.id WHERE visibility = 'private' AND user_id = :id ORDER BY posts.created_at DESC;");
+      $this->db->bind(':id', $id);
+      $results = $this->db->resultset();
+
+      return $results;
+    }*/
+  
     // Get All Posts of ID
     public function getPostsUser($id){
       $this->db->query("SELECT * FROM posts WHERE posts.user_id = :id ORDER BY posts.created_at DESC");

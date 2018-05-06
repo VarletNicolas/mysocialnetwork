@@ -37,117 +37,64 @@
 				// Sanitize POST
 				$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 				// trim() Strip whitespace (or other characters) from the beginning and end of a string
-				switch($_POST['submit']) {
-					case "Publier avec image":
-						$data = [
-							'postuser' => $postuser,
-							'friend' => $isfriend,
-							'profile' => $profile,
-							'imageProfile' => $images,
-							'imageBackground' => $imagesbg,	
-							'defaultemail' => $defaultemail,
-							'title' => trim($_POST['title']),
-							'body' => trim($_POST['body']),
-							'user_id' => $_SESSION['user_id'],
-							'visibility' => trim($_POST['viewable']),
-							'img_p_blob' => file_get_contents($_FILES['img_p_blob']['tmp_name']),
-							'size' => round(filesize($_FILES["img_p_blob"]["tmp_name"]) /1024, 5),
-							'extension' => pathinfo($_FILES['img_p_blob']['name'], PATHINFO_EXTENSION),
-							'title_err' => '',
-							'body_err' => '',
-							'img_p_blob_err' => '',
-							'size_err' => '',
-							'extension_err' => ''
-						];
+				$data = [
+					'postuser' => $postuser,
+					'friend' => $isfriend,
+					'profile' => $profile,
+					'imageProfile' => $images,
+					'imageBackground' => $imagesbg,	
+					'defaultemail' => $defaultemail,
+					'title' => trim($_POST['title']),
+					'body' => trim($_POST['body']),
+					'user_id' => $_SESSION['user_id'],
+					'visibility' => trim($_POST['viewable']),
+					'img_p_blob' => file_get_contents($_FILES['img_p_blob']['tmp_name']),
+					'size' => round(filesize($_FILES["img_p_blob"]["tmp_name"]) /1024, 5),
+					'extension' => pathinfo($_FILES['img_p_blob']['name'], PATHINFO_EXTENSION),
+					'title_err' => '',
+					'body_err' => '',
+					'img_p_blob_err' => '',
+					'size_err' => '',
+					'extension_err' => ''
+				];
+				if(empty($data['img_blob'])) {
+					$data['img_blob'] = '';
+				} else {
+					// Check extension
+					if(empty($data['extension'])){
+						$data['extension_err'] = "Votre image doit porter une extension";
+					} elseif($data['extension'] != "jpg" && $data['extension'] != "png" && $data['extension'] != "jpeg" && $data['extension'] != "gif" ) {
+						$data['extension_err'] = "Le format de l'image n'est pas supporter.";
+					}
+					// Limit size to 1mb
+					if($data['size']>1000){
+						$data['size_err'] = "Votre image pese plus de 1Mb.";
+					}
+				}
 				
-						if(empty($data['img_blob'])) {
-							$data['img_blob_err'] = "Choisisser une image.";
-						}
-				
-						// Check extension
-						if(empty($data['extension'])){
-							$data['extension_err'] = "Votre image doit porter une extension";
-						} elseif($data['extension'] != "jpg" && $data['extension'] != "png" && $data['extension'] != "jpeg" && $data['extension'] != "gif" ) {
-							$data['extension_err'] = "Le format de l'image n'est pas supporter.";
-						}
-				
-						// Limit size to 1mb
-						if($data['size']>1000){
-							$data['size_err'] = "Votre image pese plus de 1Mb.";
-						}
-						
-						// Validate email
-						if(empty($data['title'])){
-							$data['title_err'] = 'Veuiller entrer le titre';
-							// Validate name
-							if(empty($data['body'])){
-							$data['body_err'] = 'Ecrire ici';
-							}
-						}
-				
-						// Make sure there are no errors
-						if(empty($data['title_err']) && empty($data['body_err']) && empty($data['size_err']) && empty($data['extension_err']) && empty($data['body_err'])){
-							// Validation passed
-							
-							
-							//Execute
-							if($this->postModel->addPost($data)){
-							// Redirect to login
-							flash('post_added', 'Post Ajouter');
-							redirect('posts');
-							} else {
-							die('bug');
-							}
-						} else {
-							// Load view with errors
-							$this->view('posts/add', $data);
-						}
-					break;
-					case "Publier sans image":
-						$data = [
-							'postuser' => $postuser,
-							'friend' => $isfriend,
-							'title' => trim($_POST['title']),
-							'body' => trim($_POST['body']),
-							'user_id' => $_SESSION['user_id'],
-							'visibility' => trim($_POST['viewable']),
-							'img_p_blob' => '',
-							'size' => '',
-							'extension' => '',
-							'title_err' => '',
-							'body_err' => '',
-							'img_p_blob_err' => '',
-							'size_err' => '',
-							'extension_err' => ''
-						];
-						
-						// Validate email
-						if(empty($data['title'])){
-							$data['title_err'] = 'Veuiller entrer le titre';
-							// Validate name
-							if(empty($data['body'])){
-							$data['body_err'] = 'Ecrire ici';
-							}
-						}
-				
-						// Make sure there are no errors
-						if(empty($data['title_err']) && empty($data['body_err']) && empty($data['size_err']) && empty($data['extension_err']) && empty($data['body_err'])){
-							// Validation passed
-							
-							
-							//Execute
-							if($this->postModel->addPost($data)){
-							// Redirect to login
-							flash('post_added', 'Post Ajouter');
-							redirect('posts');
-							} else {
-							die('bug');
-							}
-						} else {
-							// Load view with errors
-							$this->view('posts/add', $data);
-						}
-					break;
+				// Validate email
+				if(empty($data['title'])){
+					$data['title_err'] = 'Veuiller entrer le titre';
+					// Validate name
+					if(empty($data['body'])){
+						$data['body_err'] = 'Ecrire ici';
+					}
+				}
+		
+				// Make sure there are no errors
+				if(empty($data['title_err']) && empty($data['body_err']) && empty($data['size_err']) && empty($data['extension_err']) && empty($data['body_err'])){
+					// Validation passed
+					//Execute
+					if($this->postModel->addPost($data)){
+						// Redirect to login
+						flash('post_added', 'Post Ajouter');
+						redirect('posts');
+					} else {
+						die('bug');
+					}
+				} else {
+				// Load view with errors
+				$this->view('posts/add', $data);
 				}
 			} else {
 				// IF NOT A POST REQUEST
@@ -162,11 +109,11 @@
 					'defaultemail' => $defaultemail,
 					'title' => '',
 					'body' => '',
-					'user_id' => '',
+					'user_id' =>'',
 					'visibility' => '',
 					'img_p_blob' => '',
 					'size' => '',
-					'extension' =>'',
+					'extension' => '',
 					'title_err' => '',
 					'body_err' => '',
 					'img_p_blob_err' => '',
@@ -180,6 +127,7 @@
 			
 		}
 
+		// this function == index with id for search system
 		public function p($id){
 			$profile = $this->profileModel->getProfile($id);
 			$defaultemail = $this->userModel->getEmailById($id);
@@ -206,117 +154,64 @@
 				// Sanitize POST
 				$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 				// trim() Strip whitespace (or other characters) from the beginning and end of a string
-				switch($_POST['submit']) {
-					case "Publier avec image":
-						$data = [
-							'postuser' => $postuser,
-							'friend' => $isfriend,
-							'profile' => $profile,
-							'imageProfile' => $images,
-							'imageBackground' => $imagesbg,	
-							'defaultemail' => $defaultemail,
-							'title' => trim($_POST['title']),
-							'body' => trim($_POST['body']),
-							'user_id' => $id,
-							'visibility' => trim($_POST['viewable']),
-							'img_p_blob' => file_get_contents($_FILES['img_p_blob']['tmp_name']),
-							'size' => round(filesize($_FILES["img_p_blob"]["tmp_name"]) /1024, 5),
-							'extension' => pathinfo($_FILES['img_p_blob']['name'], PATHINFO_EXTENSION),
-							'title_err' => '',
-							'body_err' => '',
-							'img_p_blob_err' => '',
-							'size_err' => '',
-							'extension_err' => ''
-						];
+				$data = [
+					'postuser' => $postuser,
+					'friend' => $isfriend,
+					'profile' => $profile,
+					'imageProfile' => $images,
+					'imageBackground' => $imagesbg,	
+					'defaultemail' => $defaultemail,
+					'title' => trim($_POST['title']),
+					'body' => trim($_POST['body']),
+					'user_id' => $_SESSION['user_id'],
+					'visibility' => trim($_POST['viewable']),
+					'img_p_blob' => file_get_contents($_FILES['img_p_blob']['tmp_name']),
+					'size' => round(filesize($_FILES["img_p_blob"]["tmp_name"]) /1024, 5),
+					'extension' => pathinfo($_FILES['img_p_blob']['name'], PATHINFO_EXTENSION),
+					'title_err' => '',
+					'body_err' => '',
+					'img_p_blob_err' => '',
+					'size_err' => '',
+					'extension_err' => ''
+				];
+				if(empty($data['img_blob'])) {
+					$data['img_blob'] = '';
+				} else {
+					// Check extension
+					if(empty($data['extension'])){
+						$data['extension_err'] = "Votre image doit porter une extension";
+					} elseif($data['extension'] != "jpg" && $data['extension'] != "png" && $data['extension'] != "jpeg" && $data['extension'] != "gif" ) {
+						$data['extension_err'] = "Le format de l'image n'est pas supporter.";
+					}
+					// Limit size to 1mb
+					if($data['size']>1000){
+						$data['size_err'] = "Votre image pese plus de 1Mb.";
+					}
+				}
 				
-						if(empty($data['img_blob'])) {
-							$data['img_blob_err'] = "Choisisser une image.";
-						}
-				
-						// Check extension
-						if(empty($data['extension'])){
-							$data['extension_err'] = "Votre image doit porter une extension";
-						} elseif($data['extension'] != "jpg" && $data['extension'] != "png" && $data['extension'] != "jpeg" && $data['extension'] != "gif" ) {
-							$data['extension_err'] = "Le format de l'image n'est pas supporter.";
-						}
-				
-						// Limit size to 1mb
-						if($data['size']>1000){
-							$data['size_err'] = "Votre image pese plus de 1Mb.";
-						}
-						
-						// Validate email
-						if(empty($data['title'])){
-							$data['title_err'] = 'Veuiller entrer le titre';
-							// Validate name
-							if(empty($data['body'])){
-							$data['body_err'] = 'Ecrire ici';
-							}
-						}
-				
-						// Make sure there are no errors
-						if(empty($data['title_err']) && empty($data['body_err']) && empty($data['size_err']) && empty($data['extension_err']) && empty($data['body_err'])){
-							// Validation passed
-							
-							
-							//Execute
-							if($this->postModel->addPost($data)){
-							// Redirect to login
-							flash('post_added', 'Post Ajouter');
-							redirect('posts');
-							} else {
-							die('bug');
-							}
-						} else {
-							// Load view with errors
-							$this->view('posts/add', $data);
-						}
-					break;
-					case "Publier sans image":
-						$data = [
-							'postuser' => $postuser,
-							'friend' => $isfriend,
-							'title' => trim($_POST['title']),
-							'body' => trim($_POST['body']),
-							'user_id' => $id,
-							'visibility' => trim($_POST['viewable']),
-							'img_p_blob' => '',
-							'size' => '',
-							'extension' => '',
-							'title_err' => '',
-							'body_err' => '',
-							'img_p_blob_err' => '',
-							'size_err' => '',
-							'extension_err' => ''
-						];
-						
-						// Validate email
-						if(empty($data['title'])){
-							$data['title_err'] = 'Veuiller entrer le titre';
-							// Validate name
-							if(empty($data['body'])){
-							$data['body_err'] = 'Ecrire ici';
-							}
-						}
-				
-						// Make sure there are no errors
-						if(empty($data['title_err']) && empty($data['body_err']) && empty($data['size_err']) && empty($data['extension_err']) && empty($data['body_err'])){
-							// Validation passed
-							
-							
-							//Execute
-							if($this->postModel->addPost($data)){
-							// Redirect to login
-							flash('post_added', 'Post Ajouter');
-							redirect('posts');
-							} else {
-							die('bug');
-							}
-						} else {
-							// Load view with errors
-							$this->view('posts/add', $data);
-						}
-					break;
+				// Validate email
+				if(empty($data['title'])){
+					$data['title_err'] = 'Veuiller entrer le titre';
+					// Validate name
+					if(empty($data['body'])){
+						$data['body_err'] = 'Ecrire ici';
+					}
+				}
+		
+				// Make sure there are no errors
+				if(empty($data['title_err']) && empty($data['body_err']) && empty($data['size_err']) && empty($data['extension_err']) && empty($data['body_err'])){
+					// Validation passed
+					//Execute
+					if($this->postModel->addPost($data)){
+						// Redirect to login
+						flash('post_added', 'Post Ajouter');
+						redirect('posts');
+					} else {
+						die('bug');
+					}
+				} else {
+				// Load view with errors
+				$this->view('posts/add', $data);
 				}
 			} else {
 				// IF NOT A POST REQUEST
@@ -344,7 +239,7 @@
 				];
 
 				// Load View
-				$this->view('profiles/index', $data);
+				$this->view('profiles/p', $data);
 			}
 			
 		}
@@ -366,11 +261,12 @@
 
 			// Check if POST
 			if($_SERVER['REQUEST_METHOD'] == 'POST'){
+				// Sanitize POST
+				$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+				// trim() Strip whitespace (or other characters) from the beginning and end of a string
 				switch($_POST['submit']) {
 					case "Changer les informations": 
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
+						
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -538,9 +434,6 @@
 						}
 					break;
 					case "Changer":
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -613,9 +506,6 @@
 						}
 					break;
 					case "Changer lieu d'etude":
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -688,9 +578,6 @@
 						}
 					break;
 					case "Changer lieu de travail":
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -835,11 +722,11 @@
 			$isfriend = $this->friendshipModel->IsFriends($_SESSION['user_id'], $profile[0]->id);
 			// Check if POST
 			if($_SERVER['REQUEST_METHOD'] == 'POST'){
+				// Sanitize POST
+				$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+				// trim() Strip whitespace (or other characters) from the beginning and end of a string
 				switch($_POST['submit']) {
 					case "Changer les informations": 
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -1008,9 +895,6 @@
 						}
 					break;
 					case "Changer":
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -1084,9 +968,6 @@
 						}
 					break;
 					case "Changer lieu d'etude":
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -1160,9 +1041,6 @@
 						}
 					break;
 					case "Changer lieu de travail":
-						// Sanitize POST
-						$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-						// trim() Strip whitespace (or other characters) from the beginning and end of a string
 						// gender default = "homme" 
 						$data = [
 							'profile' => $profile,
@@ -1288,7 +1166,7 @@
 				];
 		
 				// Load View
-				$this->view('profiles/info', $data);
+				$this->view('profiles/i', $data);
 			}
 		}
 
@@ -1637,32 +1515,124 @@
 				$imagesbg = $this->imageModel->getDefaultBackgroundimg();
 			}
 			
-			$fl = $this->friendshipModel->getfriendlist($_SESSION['user_id']);
-			$ap = array();
-			$imagesap = array();
-			foreach($fl as $arr){
-				$Uid1=$arr->id_user1;
-				$Uid2=$arr->id_user2;
-				if($_SESSION['user_id'] === $Uid1){
-					$p = $this->profileModel->getProfile($Uid2);
-					array_push($ap, $p);
-				} elseif($_SESSION['user_id'] === $Uid2){
-					$p = $this->profileModel->getProfile($Uid1);
-					array_push($ap, $p);
-				}
+			$getfriends = $this->friendshipModel->getfriendlist($_SESSION['user_id']);
+			$fpf =[]; $friendarray = [];
+			foreach ($getfriends as $f) {
+			  if(($f->id_user1 == $_SESSION['user_id']) && (!in_array($f->id_user2, $friendarray))){
+				$tmp = $this->profileModel->getProfile($f->id_user2);
+				$fpf = array_merge($fpf, $tmp);
+				array_push($friendarray, $f->id_user2);
+			  } elseif(($f->id_user2 == $_SESSION['user_id']) && (!in_array($f->id_user1, $friendarray))){
+				$tmp = $this->profileModel->getProfile($f->id_user1);
+				$fpf = array_merge($fpf, $tmp);
+				array_push($friendarray, $f->id_user1);
+			  }
 			}
-			
 			
 			// Init data
 			$data = [
 				'profile' => $profile,
 				'imageProfile' => $images,
 				'imageBackground' => $imagesbg,
-				'tab' => $ap
+				'tab' => $fpf
 			];
 
 			// Load View
 			$this->view('profiles/ListeAmis', $data);
+		}
+
+		public function la($id){
+			$profile = $this->profileModel->getProfile($id);
+			
+			if($this->imageModel->havePImage($id)){
+				$images = $this->imageModel->getProfileimg($id);
+			} else {
+				$images = $this->imageModel->getDefaultProfileimg();
+			}
+			if($this->imageModel->haveBGImage($id)){
+				$imagesbg = $this->imageModel->getBackgroundimg($id);
+			} else {
+				$imagesbg = $this->imageModel->getDefaultBackgroundimg();
+			}
+			
+			$getfriends = $this->friendshipModel->getfriendlist($id);
+			$fpf =[]; $friendarray = [];
+			foreach ($getfriends as $f) {
+			  if(($f->id_user1 == $id) && (!in_array($f->id_user2, $friendarray))){
+				$tmp = $this->profileModel->getProfile($f->id_user2);
+				$fpf = array_merge($fpf, $tmp);
+				array_push($friendarray, $f->id_user2);
+			  } elseif(($f->id_user2 == $id) && (!in_array($f->id_user1, $friendarray))){
+				$tmp = $this->profileModel->getProfile($f->id_user1);
+				$fpf = array_merge($fpf, $tmp);
+				array_push($friendarray, $f->id_user1);
+			  }
+			}
+			
+			// Init data
+			$data = [
+				'profile' => $profile,
+				'imageProfile' => $images,
+				'imageBackground' => $imagesbg,
+				'tab' => $fpf
+			];
+
+			// Load View
+			$this->view('profiles/la', $data);
+		}
+
+		public function export($id){
+			$getfriends = $this->friendshipModel->getfriendlist($id);
+			$friendprofiles =[]; $friendarray = [];
+			foreach ($getfriends as $f) {
+				if(($f->id_user1 == $id) && (!in_array($f->id_user2, $friendarray))){
+					$tmp = $this->profileModel->getProfile($f->id_user2);
+					$friendprofiles = array_merge($friendprofiles, $tmp);
+					array_push($friendarray, $f->id_user2);
+				} elseif(($f->id_user2 == $id) && (!in_array($f->id_user1, $friendarray))){
+					$tmp = $this->profileModel->getProfile($f->id_user1);
+					$friendprofiles = array_merge($friendprofiles, $tmp);
+					array_push($friendarray, $f->id_user1);
+				}
+			}
+
+			$xml = xmlwriter_open_memory();
+			xmlwriter_set_indent($xml, 1);
+			$res = xmlwriter_set_indent_string($xml, ' ');
+			xmlwriter_start_document($xml, '1.0', 'UTF-8');
+			$xml->startDTD('html'); 
+			// for XHTML 1.0 
+			$xml->startDTD('html', '-//W3C//DTD XHTML 1.0 Strict//EN','lienDTD'); // standards compliant 
+			$xml->endDTD();
+				
+			$i=0;
+			foreach ($friendprofiles as $p) {
+				$xml->addChild('amies');
+				$xml->amies[$i]->addChild('Nom', $p->fname);
+				$xml->amies[$i]->addChild('Prenom', $p->lname);
+				$xml->amies[$i]->addChild('genre', $p->gender);
+				$xml->amies[$i]->addChild('intro', $p->intro);
+				$xml->amies[$i]->addChild('email', $p->email);
+				$xml->amies[$i]->addChild('date_anniversaire', $p->birthday);
+				$xml->amies[$i]->addChild('compte_creer_le', $p->created_at);
+				$xml->amies[$i]->addChild('ville', $p->city);
+				$xml->amies[$i]->addChild('région', $p->state);
+				$xml->amies[$i]->addChild('pays', $p->country);
+				$xml->amies[$i]->addChild('code_postale', $p->zipcode);
+				$xml->amies[$i]->addChild('site_web', $p->website);
+				$xml->amies[$i]->addChild('école', $p->school);
+				$xml->amies[$i]->addChild('relation', $p->relationship);
+				$xml->amies[$i]->addChild('téléphone', $p->phonenb);
+				$xml->amies[$i]->addChild('travail', $p->work);
+				$i++;
+			}
+			$xml->asXML('friendsprofile.xml');
+			$data = [
+				'xml' => $xml
+			];
+
+			
+			$this->view('profiles/export', $data);
 		}
 	}
 ?>

@@ -101,13 +101,13 @@
         <nav class="navbar navbar-light nav-item1 justify-content-center contentarea">
             <ul class="nav" >
                 <li class="nav-item2">
-                    <a class="nav-link active" href="<?php echo URLROOT; ?>/profiles">Journal</a>
+                <a class="nav-link active" href="<?php echo URLROOT; ?>/profiles/p/<?php echo $idu2; ?>">Journal</a>
                 </li>
                 <li class="nav-item2">
-                    <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/info">A propos</a>
+                <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/i/<?php echo $idu2; ?>">A propos</a>
                 </li>
                 <li class="nav-item2">
-                    <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/friend">Amis</a>
+                <a class="nav-link" href="<?php echo URLROOT; ?>/profiles/f/<?php echo $idu2; ?>">Amis</a>
                 </li>
             </ul>
         </nav>

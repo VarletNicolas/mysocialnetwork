@@ -25,7 +25,7 @@
         <select class="form-control" id="viewable" name="viewable">
           <option>Private</option>
           <option>Public</option>
-          <option>Friends</option>
+          <!-- <option>Friends</option> -->
           <option>YouOnly</option>
         </select>
       </div>

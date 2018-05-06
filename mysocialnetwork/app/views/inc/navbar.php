@@ -14,13 +14,16 @@
         </li>
         <?php if(isset($_SESSION['user_id'])) : ?>
 		    <li class="nav-item">
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" name ="search" placeholder="Recherche" aria-label="Search">
+          <form action="<?php echo URLROOT; ?>/searchs/searchpattern" method="post" enctype="multipart/form-data" class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" name ="pattern" id="pattern" placeholder="Recherche" aria-label="Search">
             <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Rechercher</button>
           </form>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="<?php echo URLROOT; ?>/profiles">Profile</a>
+        </li>
+		    <li class="nav-item">
+          <a class="nav-link" href="<?php echo URLROOT; ?>/chats">Chat</a>
         </li>
         <?php endif; ?>
       </ul>
