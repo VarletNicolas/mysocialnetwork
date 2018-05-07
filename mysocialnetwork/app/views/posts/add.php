@@ -1,3 +1,4 @@
+<!-- Par Varlet Nicolas et Duhamel Antoine -->
 <?php require APPROOT . '/views/inc/header.php'; ?>
   <a href="<?php echo URLROOT; ?>" class="btn btn-light"><i class="fa fa-backward" aria-hidden="true"></i> retour</a>
   <div class="card card-body bg-light mt-5">

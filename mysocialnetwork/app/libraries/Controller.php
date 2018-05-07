@@ -1,8 +1,8 @@
 <?php
-  /* 
-   *  CORE CONTROLLER CLASS
-   *  Loads Models & Views
-   */
+ 	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
   class Controller {
     // Lets us load model from controllers
     public function model($model){

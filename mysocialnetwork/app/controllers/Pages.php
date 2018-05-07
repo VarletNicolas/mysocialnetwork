@@ -1,4 +1,8 @@
 <?php
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
   class Pages extends Controller{
     public function __construct(){
      

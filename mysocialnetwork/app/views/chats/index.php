@@ -1,3 +1,4 @@
+<!-- Par Varlet Nicolas et Duhamel Antoine -->
 <?php require APPROOT . '/views/inc/header.php';?>
 	<?php flash('message_send'); ?>
 	<?php //var_dump($data['friendlist']);?>

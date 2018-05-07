@@ -1,4 +1,5 @@
 <?php 
+/* Par Varlet Nicolas et Duhamel Antoine */
   // require_once 'libraries/Core.php';
   // require_once 'libraries/Controller.php';
 

@@ -1,3 +1,4 @@
+<!-- Par Varlet Nicolas et Duhamel Antoine -->
 <?php require APPROOT . '/views/inc/header.php'; ?>
   <div class="jumbotron jumbotron-fluid"> 
     <div class="container">

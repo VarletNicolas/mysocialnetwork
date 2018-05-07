@@ -1,4 +1,8 @@
 <?php
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
 session_start();
 
 // Flash message helper 

@@ -1,4 +1,7 @@
 <?php
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
   // DB Params
     define("DB_HOST", "localhost");
     define("DB_USER", "root");
@@ -13,7 +16,7 @@
   // Site Name
   define('SITENAME', 'MySocialNetwork');
   
-
+/*
   // SMTP Params
     define("SMTP_HOST", "smtp.gmail.com");
     define("SMTP_LOGIN_USERNAME", "mysocialnetworkupjv@gmail.com");
@@ -22,3 +25,4 @@
     define("SMTP_TYPE_OF_PROTECTION", "ssl");
     define("SMTP_PORT_NUMBER","465");
 
+*/

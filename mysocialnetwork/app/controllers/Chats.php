@@ -1,4 +1,8 @@
 <?php
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
   class Chats extends Controller{
     public function __construct(){
       if(!isset($_SESSION['user_id'])){
@@ -25,7 +29,7 @@
         array_push($friendarray, $f->id_user1);
       }
     }
-    $messages = $this->chatModel->getMessages($_SESSION['user_id']);
+    
     
     // si tu as un form et que tu exec
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -34,13 +38,13 @@
           
       $data = [
         'friendlist' => $friendprofiles,
-        'messages' => $messages,
         'dest' => trim($_POST['dest']),
         'message' => trim($_POST['message']),
         'emmeteur' => $_SESSION['user_id'],
         'dest_err' => '',
         'message_err' => ''
       ];
+      
 
       // Validate dest
       if(empty($data['dest'])){
@@ -54,7 +58,7 @@
       // Make sure there are no errors
       if(empty($data['message_err']) && empty($data['dest_err'])){
         // Validation passed
-                  
+       
         //Execute
         if($this->chatModel->addMessage($data)){
           // Redirect to login
@@ -70,7 +74,6 @@
     } else {
       $data = [
         'friendlist' => $friendprofiles,
-        'messages' => $messages,
         'dest' => '',
         'message' => '',
         'emmeteur' => '',

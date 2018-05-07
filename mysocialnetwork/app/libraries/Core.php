@@ -1,9 +1,8 @@
 <?php
-  /* 
-   *  APP CORE CLASS
-   *  Creates URL & Loads Core Controller
-   *  URL Format - /controller/method/param1/param2
-   */
+  	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
   class Core {
     // Set Defaults
     protected $currentController = 'Pages'; // Default controller

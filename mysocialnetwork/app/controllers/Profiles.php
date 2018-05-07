@@ -1,4 +1,8 @@
 <?php 
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
 	class Profiles extends Controller {
 		public function __construct(){
 			if(!isset($_SESSION['user_id'])){
@@ -1580,7 +1584,8 @@
 			// Load View
 			$this->view('profiles/la', $data);
 		}
-
+		
+		/*
 		public function export($id){
 			$getfriends = $this->friendshipModel->getfriendlist($id);
 			$friendprofiles =[]; $friendarray = [];
@@ -1596,36 +1601,69 @@
 				}
 			}
 
-			$xml = xmlwriter_open_memory();
-			xmlwriter_set_indent($xml, 1);
-			$res = xmlwriter_set_indent_string($xml, ' ');
-			xmlwriter_start_document($xml, '1.0', 'UTF-8');
-			$xml->startDTD('html'); 
+			$xml = new XMLWriter();  
+			$xml->openURI('php://output');  
+			$xml->startDocument('1.0','UTF-8');  
+			$xml->xmlwriter_start_dtd('html'); 
 			// for XHTML 1.0 
-			$xml->startDTD('html', '-//W3C//DTD XHTML 1.0 Strict//EN','https://github.com/VarletNicolas/mysocialnetwork/edit/master/mysocialnetwork/app/views/profiles/xml/mysocialnetwork.dtd'); // standards compliant 
+			$xml->xmlwriter_end_dtd($xml, 'html', '-//W3C//DTD XHTML 1.0 Strict//EN','http://mysocialnetwork1.byethost14.com/public/mysocialnetwork.dtd'); // standards compliant 
 			$xml->endDTD();
 				
 			$i=0;
 			foreach ($friendprofiles as $p) {
-				$xml->addChild('amies');
-				$xml->amies[$i]->addChild('Nom', $p->fname);
-				$xml->amies[$i]->addChild('Prenom', $p->lname);
-				$xml->amies[$i]->addChild('genre', $p->gender);
-				$xml->amies[$i]->addChild('intro', $p->intro);
-				$xml->amies[$i]->addChild('email', $p->email);
-				$xml->amies[$i]->addChild('date_anniversaire', $p->birthday);
-				$xml->amies[$i]->addChild('compte_creer_le', $p->created_at);
-				$xml->amies[$i]->addChild('ville', $p->city);
-				$xml->amies[$i]->addChild('région', $p->state);
-				$xml->amies[$i]->addChild('pays', $p->country);
-				$xml->amies[$i]->addChild('code_postale', $p->zipcode);
-				$xml->amies[$i]->addChild('site_web', $p->website);
-				$xml->amies[$i]->addChild('école', $p->school);
-				$xml->amies[$i]->addChild('relation', $p->relationship);
-				$xml->amies[$i]->addChild('téléphone', $p->phonenb);
-				$xml->amies[$i]->addChild('travail', $p->work);
+				$xml->startElement('amies');
+					$xml->startElement('Nom');
+						$xml->text( $p->fname);
+					$xml->endElement();
+					$xml->startElement('Prenom');
+						$xml->text( $p->lname);
+					$xml->endElement();
+					$xml->startElement('genre');
+						$xml->text( $p->gender);
+					$xml->endElement();
+					$xml->startElement('intro');
+						$xml->text( $p->intro);
+					$xml->endElement();
+					$xml->startElement('email');
+						$xml->text( $p->email);
+					$xml->endElement();
+					$xml->startElement('date_anniversaire');
+						$xml->text( $p->birthday);
+					$xml->endElement();
+					$xml->startElement('compte_creer_le');
+						$xml->text( $p->created_at);
+					$xml->endElement();
+					$xml->startElement('ville');
+						$xml->text( $p->city);
+					$xml->endElement();
+					$xml->startElement('région');
+						$xml->text( $p->state);
+					$xml->endElement();
+					$xml->startElement('pays');
+						$xml->text( $p->country);
+					$xml->endElement();
+					$xml->startElement('code_postale');
+						$xml->text( $p->zipcode);
+					$xml->endElement();
+					$xml->startElement('site_web');
+						$xml->text( $p->website);
+					$xml->endElement();
+					$xml->startElement('école');
+						$xml->text( $p->school);
+					$xml->endElement();
+					$xml->startElement('relation');
+						$xml->text( $p->relationship);
+					$xml->endElement();
+					$xml->startElement('téléphone');
+						$xml->text( $p->phonenb);
+					$xml->endElement();
+					$xml->startElement('travail');
+						$xml->text( $p->work);
+					$xml->endElement();
+				$xml->endElement();
 				$i++;
 			}
+			// pour le xsl xmlwriter_write_pi()
 			$xml->asXML('friendsprofile.xml');
 			$data = [
 				'xml' => $xml
@@ -1633,6 +1671,6 @@
 
 			
 			$this->view('profiles/export', $data);
-		}
+		}*/
 	}
 ?>

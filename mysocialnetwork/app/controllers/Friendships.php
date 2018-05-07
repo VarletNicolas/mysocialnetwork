@@ -1,4 +1,8 @@
 <?php 
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
 	class Friendships extends Controller {
 		public function __construct(){
 			if(!isset($_SESSION['user_id'])){

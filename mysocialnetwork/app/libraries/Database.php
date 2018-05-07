@@ -1,11 +1,8 @@
 <?php
-	/* 
-   *  PDO DATABASE CLASS
-   *  Connects Database Using PDO
-	 *  Creates Prepeared Statements
-	 * 	Binds params to values
-	 *  Returns rows and results
-   */
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
 class Database {
 	private $host = DB_HOST;
 	private $user = DB_USER;

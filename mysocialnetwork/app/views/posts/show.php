@@ -1,3 +1,4 @@
+<!-- Par Varlet Nicolas et Duhamel Antoine -->
 <?php require APPROOT . '/views/inc/header.php'; ?>
   <div class="nav">
     <a href="<?php echo URLROOT; ?>" class="btn btn-light mb-3 nav-item"><i class="fa fa-backward" aria-hidden="true"></i> Retour</a>

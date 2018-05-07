@@ -1,4 +1,8 @@
 <?php
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
   class Users extends Controller{
     public function __construct(){
       $this->userModel = $this->model('User');
@@ -391,11 +395,13 @@
         $data = [       
           'email' => trim($_POST['email']),
           'password' => trim($_POST['password']),   
-          'save' => trim($_POST['save']),     
+          'save' => '',     
           'email_err' => '',
           'password_err' => '',       
         ];
+        
         if(isset($_POST['save']) && $_POST['save'] == 'save'){
+          $data['save'] = trim($_POST['save']);
           setcookie ("user_email",$_POST["email"],time()+ (10 * 365 * 24 * 60 * 60));
 				  setcookie ("user_password",$_POST["password"],time()+ (10 * 365 * 24 * 60 * 60));
         } else {

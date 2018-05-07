@@ -1,4 +1,8 @@
 <?php
+	/*
+		Par Varlet Nicolas et Duhamel Antoine
+	*/
+
   class Profile {
 		private $db;
 		
@@ -90,10 +94,10 @@
         return false;
       }
     }
-    
+    /*
     public function exportfriendsinfotoxml($data){
       // function defination to convert array to xml
       
-    }
+    }*/
   }
 ?>

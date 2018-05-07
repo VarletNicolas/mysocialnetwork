@@ -1,3 +1,4 @@
+<!-- Par Varlet Nicolas et Duhamel Antoine -->
 <?php require APPROOT . '/views/inc/header.php'; ?>
   <?php flash('post_message'); flash('post_comment_not_added'); flash('post_comment_added'); ?>
   <div class="row mb-3">

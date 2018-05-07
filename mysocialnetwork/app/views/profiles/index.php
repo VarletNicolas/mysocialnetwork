@@ -1,3 +1,4 @@
+<!-- Par Varlet Nicolas et Duhamel Antoine -->
 <?php require APPROOT . '/views/inc/header.php';?>
 <?php foreach($data['profile'] as $arrdataprofile) : ?>
   <?php foreach($arrdataprofile as $key => $value) : ?>

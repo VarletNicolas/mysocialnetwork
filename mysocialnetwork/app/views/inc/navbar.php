@@ -1,3 +1,4 @@
+<!-- Par Varlet Nicolas et Duhamel Antoine -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
   <div class="container">
     <a class="navbar-brand" href="#"><?php echo SITENAME; ?></a>
